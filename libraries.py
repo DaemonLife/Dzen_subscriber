@@ -3,7 +3,7 @@ from selenium.webdriver.chrome.options import Options
 import os
 from time import sleep
 import platform # определение платформы
-import random
+import threading, random
 from datetime import timedelta, datetime
 
 from urllib.request import urlopen
@@ -11,128 +11,24 @@ import pickle # печеньки
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-
-def subscribing(i, link, arr):
-
-    driver = driver_start()
-    finder = Finder(driver)
-    driver.get(link)
-    trye_url = driver.current_url
-    count = 0
-    for acc in arr:
-        print(f'Proc.{i} подписка...')
-        x = acc.split(':')
-        login = x[0]
-        password = x[1]
-
-        # ---------------- Login ---------------- #
-
-        # --------- Первый раз Кнопка Войти ---------- #
-
-        if count == 0:
-            path = "//*[contains(text(), 'Войти')]"
-            el = finder.element_by_xpath(path)
-            el.click()
-
-        # --------- Отправка логина ---------- #
-
-        el = finder.element_by_name('login')
-        el.send_keys(login)
-
-
-        path = "//button[@type='submit']"
-        el = finder.element_by_xpath(path)
-        el.click()
-
-        # --------- Отправка пароля ---------- #
-
-        el = finder.element_by_name('passwd')
-        el.send_keys(password)
-
-        # --------- Если попросит телефон ---------- # random otional
-        if driver.current_url != trye_url:
-            path = '//button'
-            els = finder.elements_by_xpath(path, 1)
-            try:
-                element = els[1]
-                element.click()
-            except:
-                pass
-
-        # -------------- End Login -------------- #
-
-        # Подписаться
-
-        path = "//span[contains(text(), 'Подписаться')]"
-        try:
-            element = WebDriverWait(driver, 2).until(
-                EC.presence_of_element_located((By.XPATH, path))
-            )
-            element = driver.find_element_by_xpath(path)
-        except:
-            pass
-        try:
-            element = element.find_element_by_xpath('..')
-            element.click()
-        except:
-            pass
-
-
-        # ------------------ Exit ------------------ #
-
-        # Открыть меню юзера
-        
-        path = '//nav/div[3]/div[3]/button'
-        el = finder.element_by_xpath(path)
-        try:
-            el.click()
-        except:
-            print('Err 1')
-
-        # Нажать Выйти
-        
-        path = '//div/div/div[3]/a'
-        el = finder.element_by_xpath(path)
-        try:
-            el.click()
-        except:
-            print('Err 2')
-        
-        # Нажать Войти
-
-        path = "//*[contains(text(), 'Войти')]"
-        el = finder.element_by_xpath(path)
-        try:
-            el.click()
-        except:
-            print('Err 3')
-
-        # Выбрать другой акк
-        if count < 2:
-            path = '//form/div[1]/a'
-            el = finder.element_by_xpath(path)
-            try:
-                el.click()   
-            except:
-                print('Err 4')
-
-        path = '//a/span[2]'
-        try:
-            element = WebDriverWait(driver, 2).until(
-                EC.presence_of_element_located((By.XPATH, path))
-            )
-            element = driver.find_element_by_xpath(path)
-        except:
-            pass
-        try:
-            element = element.find_element_by_xpath('..')
-            element.click()
-        except:
-            pass
-
-        count += 1
-        print(f'Proc.{i} подписка завершена, число подписок потока {i}: {count}')
-
+def licence(d, m, y):
+   res = urlopen('http://just-the-time.appspot.com/')
+   result = res.read().strip()
+   result_str = result.decode('utf-8')
+   x = result_str.split(" ")
+   today_date = x[0].split("-")
+   now = datetime(int(today_date[0]), int(today_date[1]), int(today_date[2]))
+   end_time = datetime(y, m, d)
+   print(end_time)
+   print(now)
+   if (now >= end_time):
+       if (os.path.exists(BASE_DIR + 'key5543y7.txt') == 1):
+           print('Key is here')
+           return 1
+       print('Заплати - и получи ключ!')
+       return 0
+   else:
+       return 1
 
 def my_system():
     my_sys = (platform.platform())[:5]
@@ -168,11 +64,6 @@ def driver_start():
     driver = webdriver.Chrome(chrome_options=opts, executable_path=r'' + BASE_DIR + driver_path)
 
     return driver # возвращаем объект
-
-def authorization(driver, username, password):
-    #ВХОД В АККАУНТ
-    driver.get('https://www.facebook.com/login')
-    sleep(3)
 
 def open_sign():
 

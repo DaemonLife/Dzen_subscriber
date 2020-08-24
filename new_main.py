@@ -1,16 +1,12 @@
-import threading, random
-from time import sleep
 from selenium.webdriver.support.ui import WebDriverWait # timeout 
 from selenium.webdriver.support import expected_conditions as EC # conditions for search
-
 from selenium.webdriver.common.by import By # method of search
 
-from libraries import *
+from libraries import sleep, driver_start, open_sign, random, threading, licence
 
 from finder import Finder 
 
 def subscribing(i, link, arr):
-
     driver = driver_start()
     finder = Finder(driver)
     driver.get(link)
@@ -24,14 +20,14 @@ def subscribing(i, link, arr):
 
         # ---------------- Login ---------------- #
 
-        # --------- Первый раз Кнопка Войти ---------- #
+        # Первый раз Кнопка Войти 
 
         if count == 0:
             path = "//*[contains(text(), 'Войти')]"
             el = finder.element_by_xpath(path)
             el.click()
 
-        # --------- Отправка логина ---------- #
+        # Отправка логина 
 
         el = finder.element_by_name('login')
         el.send_keys(login)
@@ -41,12 +37,12 @@ def subscribing(i, link, arr):
         el = finder.element_by_xpath(path)
         el.click()
 
-        # --------- Отправка пароля ---------- #
+        # Отправка пароля
 
         el = finder.element_by_name('passwd')
         el.send_keys(password)
 
-        # --------- Если попросит телефон ---------- # random otional
+        # Если попросит телефон - random otional
         if driver.current_url != trye_url:
             path = '//button'
             els = finder.elements_by_xpath(path, 1)
@@ -130,39 +126,44 @@ def subscribing(i, link, arr):
         count += 1
         print(f'Proc.{i} подписка завершена, число подписок потока {i}: {count}')
 
-accounts = open_sign()
 
-print('Введите необходимую ссылку. Пример: https://zen.yandex.ru/fitness13')
-link = 'https://zen.yandex.ru/fitness13'
-# link = input('Ввод ссылки:')
+li = licence(22, 8, 2020)
 
-accs = int(input('Введите нужное число подписок: '))
-flows_max = int(input('Введите число потоков: '))
+if li == 1:
 
-i = 0
-new_accounts = []
-for line in accounts:
-    new_accounts.append(line)
-    i += 1
-    if i > accs:
-        break
 
-del accounts
+    accounts = open_sign()
 
-flow_accs = []
-second_index = 0
-first_index = 0
-for flows in range(flows_max):
-    if second_index == 0:
-        second_index = int(len(new_accounts)/flows_max)
-    else:
-        first_index = second_index
-        second_index += second_index
-        while second_index > accs+1:
-            second_index -= 1
-    arr = new_accounts[first_index:second_index]
-    try:
-        threading.Thread(target=subscribing, args=[flows, link, arr]).start()
-        print(flows, 'поток запущен')
-    except:
-        print('err')
+    print('Введите необходимую ссылку. Пример: https://zen.yandex.ru/fitness13')
+    link = 'https://zen.yandex.ru/fitness13'
+    link = input('Ввод ссылки:')
+
+    accs = int(input('Введите нужное число подписок: '))
+    flows_max = int(input('Введите число потоков: '))
+
+    i = 0
+    new_accounts = []
+    for line in accounts:
+        new_accounts.append(line)
+        i += 1
+        if i > accs:
+            break
+
+    del accounts, accs
+
+    first_index = 0
+    second_index = 0
+    for flows in range(flows_max):
+        if second_index == 0:
+            second_index = int(len(new_accounts)/flows_max)
+        else:
+            first_index = second_index
+            second_index += second_index
+            while second_index > len(new_accounts)+1:
+                second_index -= 1
+        arr = new_accounts[first_index:second_index]
+        try:
+            threading.Thread(target=subscribing, args=[flows, link, arr]).start()
+            print(flows, 'поток запущен')
+        except:
+            print('err')
