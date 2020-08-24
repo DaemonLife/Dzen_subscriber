@@ -181,7 +181,7 @@ accounts = open_sign()
 print('Введите необходимую ссылку. Пример: https://zen.yandex.ru/fitness13')
 link = input('Ввод ссылки:')
 
-# link_part_2 = link[:]
+link_part_2 = link[:]
 
 subscribe_count = int(input('Введите нужное число подписок: '))
 flows_max = int(input('Введите число потоков: '))
