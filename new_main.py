@@ -16,7 +16,6 @@ def subscribing(i, link, arr):
     driver.get(link)
     trye_url = driver.current_url
     count = 0
-    bad_way = 0
     for acc in arr:
         print(f'Proc.{i} подписка...')
         x = acc.split(':')
@@ -82,52 +81,60 @@ def subscribing(i, link, arr):
         
         path = '//nav/div[3]/div[3]/button'
         el = finder.element_by_xpath(path)
-        el.click()
+        try:
+            el.click()
+        except:
+            print('Err 1')
 
         # Нажать Выйти
         
         path = '//div/div/div[3]/a'
         el = finder.element_by_xpath(path)
-        el.click()
+        try:
+            el.click()
+        except:
+            print('Err 2')
         
         # Нажать Войти
 
         path = "//*[contains(text(), 'Войти')]"
         el = finder.element_by_xpath(path)
-        el.click()
+        try:
+            el.click()
+        except:
+            print('Err 3')
 
         # Выбрать другой акк
-
-        if count == '500': 
-
-            path = "//form/div/a"
+        if count < 2:
+            path = '//form/div[1]/a'
             el = finder.element_by_xpath(path)
-            el.click()
-            path = '//div[2]/div[3]/div/div/div/a'
-            el = finder.element_by_xpath(path)
-            el.click()
-            
-        else:
-            if bad_way == 1:
-                path = '//div[3]/div/div/form/div[1]/a'
-                el = finder.element_by_xpath(path)
-                el.click()
-                path = "//span[contains(text(), 'Войти в другой аккаунт']"
-            else:
-                path = "//a[contains(text(), 'Другой аккаунт')]"
-                el = finder.element_by_xpath(path)
-                if el == None:
-                    bad_way = 1
-                else:
-                    el.click()
+            try:
+                el.click()   
+            except:
+                print('Err 4')
+
+        path = '//a/span[2]'
+        try:
+            element = WebDriverWait(driver, 2).until(
+                EC.presence_of_element_located((By.XPATH, path))
+            )
+            element = driver.find_element_by_xpath(path)
+        except:
+            pass
+        try:
+            element = element.find_element_by_xpath('..')
+            element.click()
+        except:
+            pass
 
         count += 1
-        print(f'Proc.{i} подписка завершена, общее число подписок: {count}')
+        print(f'Proc.{i} подписка завершена, число подписок потока {i}: {count}')
 
 accounts = open_sign()
 
 print('Введите необходимую ссылку. Пример: https://zen.yandex.ru/fitness13')
-link = input('Ввод ссылки:')
+link = 'https://zen.yandex.ru/fitness13'
+# link = input('Ввод ссылки:')
 
 accs = int(input('Введите нужное число подписок: '))
 flows_max = int(input('Введите число потоков: '))
@@ -135,25 +142,25 @@ flows_max = int(input('Введите число потоков: '))
 i = 0
 new_accounts = []
 for line in accounts:
-    while i < accs:
-        new_accounts.append(line)
-        i += 1
+    new_accounts.append(line)
+    i += 1
+    if i > accs:
+        break
 
-del accs, accounts
+del accounts
 
 flow_accs = []
 second_index = 0
 first_index = 0
-
 for flows in range(flows_max):
     if second_index == 0:
         second_index = int(len(new_accounts)/flows_max)
     else:
         first_index = second_index
         second_index += second_index
-    print(first_index, ':', second_index)
+        while second_index > accs+1:
+            second_index -= 1
     arr = new_accounts[first_index:second_index]
-    print(arr)
     try:
         threading.Thread(target=subscribing, args=[flows, link, arr]).start()
         print(flows, 'поток запущен')
