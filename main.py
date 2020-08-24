@@ -20,6 +20,12 @@ def subscribing(i, link, account):
 
     # --------- step 1 ---------- #
 
+    # print('Поток', i, 'старт')
+    sleep(random.randint(5,15))
+    # print('Поток', i, 'конец')
+    driver.quit()
+    return 0
+
     path = "//*[contains(text(), 'Войти')]"
     try:
         element = WebDriverWait(driver, 10).until(
@@ -108,7 +114,6 @@ def subscribing(i, link, account):
     # --------- step 6 ---------- # random otional
     path = '//button'
     button_is = 0
-    sleep(0.5)
     try:
         elements = WebDriverWait(driver, 10).until(
             EC.presence_of_all_elements_located((By.XPATH, path))
@@ -124,10 +129,7 @@ def subscribing(i, link, account):
             element = elements[1]
             element.click()
         except:
-            print(num, 'Ошибка нажатия <Не сейчас>')
-            temp = input('pause . . .')
-
-            
+            print(num, 'Ошибка нажатия <Не сейчас>')  
 
     # -------------- End Login -------------- #
     # ----------- Click on button ----------- #
@@ -153,16 +155,46 @@ def subscribing(i, link, account):
 
     # --------- End Click on button --------- #
 
-    sleep(6)
+    sleep(60)
     driver.quit()
     print(num, 'end')
 
 accounts = open_sign()
 
-# link = 'https://zen.yandex.ru/gaming_news'
-link = 'https://zen.yandex.ru/fitness13'
+# link = 'https://zen.yandex.ru/fitness13'
+print('Введите необходимую ссылку. Пример: https://zen.yandex.ru/fitness13')
+link = input('Ввод ссылки:')
+subscribe_count = int(input('Введите нужное число подписок: '))
+flows_max = int(input('Введите число потоков: '))
 
-for i in range(1):
-    account = accounts[i]
-    threading.Thread(target=subscribing, args=[i, link, account]).start()
-    print('Proc.' + str(i), 'start')
+threads = []
+count = 0
+flows = 0
+i = 0
+b = 0
+base_threading_active = threading.activeCount()
+while True:
+    while threading.activeCount() - base_threading_active < flows_max:
+        try:
+            x = threading.Thread(target=subscribing, args=[flows, link, accounts[i]])
+        except:
+            print(f'Выход за предел количества аккаунтов ({i+1}). Работа завершена.')
+            b = 1
+            break
+        threads.append(x)
+        x.start()
+
+        i += 1
+        if i >= subscribe_count:
+            b = 1
+            break
+    print('Число потоков:', threading.activeCount()-base_threading_active, 'Число вып. действий:', i, end='\r')
+
+    if b == 1:
+        break
+
+while base_threading_active != threading.activeCount():
+    sleep(1)
+
+print(f'\n\nВсе операции завершены!')
+pause = input('Введите <Enter> для выхода...')
