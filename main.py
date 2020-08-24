@@ -89,7 +89,7 @@ def subscribing(i, link, account):
     except:
         print(num, 'Ошибка ввода в <password>')
 
-    # --------- step 5 ---------- #
+    # --------- step 5 ---------- # it's auto!
     # sleep(0.5)
     # path = "//button[@type='submit']"
     # try:
@@ -105,25 +105,53 @@ def subscribing(i, link, account):
     # except:
     #     print(num, 'Ошибка нажатия <submit 2>')
 
-    # -------------- End Login -------------- #
+    # --------- step 6 ---------- # random otional
+    path = '//button'
+    button_is = 0
+    sleep(0.5)
+    try:
+        elements = WebDriverWait(driver, 10).until(
+            EC.presence_of_all_elements_located((By.XPATH, path))
+        )
+        elements = driver.find_elements_by_xpath(path)
+        button_is = 1
+    except:
+        pass
 
+    if button_is == 1:
+        print(num, 'Отклонение просьбы добавить телефон')
+        try:
+            element = elements[1]
+            element.click()
+        except:
+            print(num, 'Ошибка нажатия <Не сейчас>')
+            temp = input('pause . . .')
+
+            
+
+    # -------------- End Login -------------- #
     # ----------- Click on button ----------- #
 
-    path = '//div[3]/div/div/div/div/button'
+
+    # path = '//div[3]/div/div/div/div/button'
+    path = "//span[contains(text(), 'Подписаться')]"
     try:
         element = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, path))
         )
         element = driver.find_element_by_xpath(path)
     except:
-        print(num, '<button subscribe> не найдено')
+        print(num, '<Подписаться/span> не найдено')
 
     try:
+        element = element.find_element_by_xpath('..')
         element.click()
         print(num, 'successful comlited!')
     except:
-        print(num, 'Ошибка нажатия <button subscribe>')
+        print(num, 'Ошибка нажатия <Подписаться>')
         print(num, 'Error comlited!')
+
+    # --------- End Click on button --------- #
 
     sleep(6)
     driver.quit()
@@ -134,7 +162,7 @@ accounts = open_sign()
 # link = 'https://zen.yandex.ru/gaming_news'
 link = 'https://zen.yandex.ru/fitness13'
 
-for i in range(5):
+for i in range(1):
     account = accounts[i]
     threading.Thread(target=subscribing, args=[i, link, account]).start()
     print('Proc.' + str(i), 'start')
