@@ -19,13 +19,14 @@ def licence(d, m, y):
    today_date = x[0].split("-")
    now = datetime(int(today_date[0]), int(today_date[1]), int(today_date[2]))
    end_time = datetime(y, m, d)
-   print(end_time)
-   print(now)
+#    print(end_time)
+#    print(now)
    if (now >= end_time):
-       if (os.path.exists(BASE_DIR + 'key5543y7.txt') == 1):
+       if (os.path.exists('key5543y7.txt') == 1):
            print('Key is here')
            return 1
        print('Заплати - и получи ключ!')
+       pause = input(' . . . ')
        return 0
    else:
        return 1
@@ -36,12 +37,11 @@ def my_system():
         return "Linux"
     elif my_sys == "Windo":
         return "Windows"
-    elif my_sys == "macOS":
-        return "MacOS"
+    
 
 if (my_system() == "Linux") or (my_system() == "MacOS"):
     BASE_DIR += "/"
-elif my_system() == "Windo":
+elif my_system() == "Windows":
     BASE_DIR += "\\"
 else:
     print('Ошибка определения вашей системы')
@@ -61,7 +61,7 @@ def driver_start():
     # opts.add_experimental_option("mobileEmulation", mobile_emulation)
 
     # opts.add_argument("--headless") 
-    driver = webdriver.Chrome(chrome_options=opts, executable_path=r'' + BASE_DIR + driver_path)
+    driver = webdriver.Chrome(chrome_options=opts, executable_path=r'driver\\Windows\\chromedriver.exe')
 
     return driver # возвращаем объект
 
@@ -69,15 +69,32 @@ def open_sign():
 
     my_sys = my_system()
     if my_sys == "Windows":
-        file_path = 'files\\accounts.txt'
+        file_path = 'files\\accounts.txt' # система курильщика
     elif my_sys == "Linux":
-        file_path = 'files/accounts.txt'
+        file_path = 'files/accounts.txt'  # нормальная система
     elif my_sys == "MacOS":
-        file_path = 'files/accounts.txt'
+        file_path = 'files/accounts.txt'  # нормальная система
 
-    f = open(BASE_DIR + file_path, 'r')
+    f = open('files\\accounts.txt', 'r')
     acc_list = []
     for line in f:
         acc_list.append(line)
     f.close()
     return acc_list
+
+def open_links():
+
+    my_sys = my_system()
+    if my_sys == "Windows":
+        file_path = 'files\\accounts.txt' # система курильщика
+    elif my_sys == "Linux":
+        file_path = 'files/accounts.txt'  # нормальная система
+    elif my_sys == "MacOS":
+        file_path = 'files/accounts.txt'  # нормальная система
+
+    f = open('files\\links.txt', 'r')
+    links_list = []
+    for line in f:
+        links_list.append(line)
+    f.close()
+    return links_list

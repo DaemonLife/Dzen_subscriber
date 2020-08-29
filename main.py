@@ -1,219 +1,112 @@
-import threading, random
-from time import sleep
 from selenium.webdriver.support.ui import WebDriverWait # timeout 
 from selenium.webdriver.support import expected_conditions as EC # conditions for search
-
 from selenium.webdriver.common.by import By # method of search
 
-from libraries import *
+from libraries import sleep, driver_start, open_sign, open_links, random, threading, licence
 
-def subscribing(i, link, account):
-    num = 'Proc.' + str(i) + ':'
-    x = account.split(':')
-    login = x[0]
-    password = x[1]
+from finder import Finder 
 
+from small_functions import *
+
+def subscribing(i, link, arr):
     driver = driver_start()
+    finder = Finder(driver)
     driver.get(link)
+    count = 0
+    for acc in arr:
+        print(f'Proc.{i} подписка...')
+        sleep(i*2.5)
+        x = acc.split(':')
+        login = x[0]
+        password = x[1]
 
-    # ---------------- Login ---------------- #
+        # Первый раз Кнопка Войти 
+        if count == 0:
+            first_login(finder)
+        # Отправка логина и пароля
+        send_login_password(finder, login, password, link, count)
 
-    # --------- step 1 ---------- #
+        # Подписаться
+        click_subscribe_button(finder, login, password, link, count, i)
 
-    # # print('Поток', i, 'старт')
-    # sleep(random.randint(5,15))
-    # # print('Поток', i, 'конец')
-    # driver.quit()
-    # return 0
+        # Открыть меню юзера
+        open_menu_user(finder, login, password, link, count)
 
-    path = "//*[contains(text(), 'Войти')]"
-    try:
-        element = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, path))
-        )
-        element = driver.find_element_by_xpath(path)
-    except:
-        pass
-        # print(num, '<Войти> не найдено')
+        # Нажать Выйти
+        click_exit_button(finder, login, password, link, count)
+        
+        # Нажать Войти
+        click_login_button(finder, login, password, link, count)
 
-    try:
-        element.click()
-    except:
-        pass
-        # print(num, 'Ошибка нажатия <Войти>')
+        # Выбрать другой акк
+        select_other_acc(finder, login, password, link, count)
 
-    # --------- step 2 ---------- #
-
-    try:
-        element = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.NAME, 'login'))
-        )
-        element = driver.find_element_by_name('login')
-    except:
-        pass
-        # print(num, '<login> не найдено')
-
-    try:
-        element.send_keys(login)
-    except:
-        pass
-        # print(num, 'Ошибка ввода в <login>')
-
-    # --------- step 3 ---------- #
-
-    path = "//button[@type='submit']"
-    try:
-        element = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, path))
-        )
-        element = driver.find_element_by_xpath(path)
-    except:
-        pass
-        # print(num, '<submit 1> не найдено')
-
-    try:
-        element.click()
-    except:
-        pass
-        # print(num, 'Ошибка нажатия <submit 1>')
-
-    # --------- step 4 ---------- #
-
-    # path = "//input[@type='password']"
-    # try:
-    #     element = WebDriverWait(driver, 10).until(
-    #         EC.presence_of_element_located((By.XPATH, path))
-    #     )
-    #     element = driver.find_element_by_xpath(path)
-    # except:
-    #     print('<password> не найдено')
-
-    try:
-        element = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.NAME, 'passwd'))
-        )
-        element = driver.find_element_by_name('passwd')
-    except:
-        pass
-        # print(num, '<password> не найдено')
-
-    try:
-        element.send_keys(password)
-    except:
-        pass
-        # print(num, 'Ошибка ввода в <password>')
-
-    # --------- step 5 ---------- # it's auto!
-    # sleep(0.5)
-    # path = "//button[@type='submit']"
-    # try:
-    #     element = WebDriverWait(driver, 20).until(
-    #         EC.presence_of_element_located((By.XPATH, path))
-    #     )
-    #     element = driver.find_element_by_xpath(path)
-    # except:
-    #     print(num, '<submit 2> не найдено')
-
-    # try:
-    #     element.click()
-    # except:
-    #     print(num, 'Ошибка нажатия <submit 2>')
-
-    # --------- step 6 ---------- # random otional
-    path = '//button'
-    button_is = 0
-    try:
-        elements = WebDriverWait(driver, 10).until(
-            EC.presence_of_all_elements_located((By.XPATH, path))
-        )
-        elements = driver.find_elements_by_xpath(path)
-        button_is = 1
-    except:
-        pass
-
-    if button_is == 1:
-        # print(num, 'Отклонение просьбы добавить телефон')
-        try:
-            element = elements[1]
-            element.click()
-        except:
-            pass
-            # print(num, 'Ошибка нажатия <Не сейчас>')  
-
-    # -------------- End Login -------------- #
-    # ----------- Click on button ----------- #
-
-
-    # path = '//div[3]/div/div/div/div/button'
-    path = "//span[contains(text(), 'Подписаться')]"
-    try:
-        element = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, path))
-        )
-        element = driver.find_element_by_xpath(path)
-    except:
-        pass
-        # print(num, '<Подписаться/span> не найдено')
-
-    try:
-        element = element.find_element_by_xpath('..')
-        element.click()
-        # print(num, 'Subscribe comlited!')
-    except:
-        pass
-        # print(num, 'Ошибка нажатия <Подписаться>')
-        # print(num, 'Error comlited!')
-
-    # --------- End Click on button --------- #
-
-    sleep(10) # будет пауза 10 секунд после осущестлвения подписки
+        count += 1
+        print(f'Proc.{i} подписка завершена, число подписок потока {i}: {count}')
+    
     driver.quit()
-    print(num, 'end')
+    print(f'Proc.{i} завершен')
 
-accounts = open_sign()
 
-# link = 'https://zen.yandex.ru/fitness13'
-# link_part_1 = 'https://passport.yandex.ru/auth?origin=zen&retpath=https%3A%2F%2Fzen.yandex.ru%2Fid%2F'
 
-# link_part_3 = '%3Fclid%3D300%26from_page%3Dfeed_header_login'
-# https://passport.yandex.ru/auth?origin=zen&retpath=https%3A%2F%2Fzen.yandex.ru%2Fid%2F5e8841d901822a01b722bb07%3Fclid%3D300%26from_page%3Dfeed_header_login
-#                                                              https://zen.yandex.ru/id/5e8841d901822a01b722bb07?lang=ru&clid=300&referrer_place=multisearch
+accounts = open_sign() 
+links = open_links() 
+
 print('Введите необходимую ссылку. Пример: https://zen.yandex.ru/fitness13')
-link = input('Ввод ссылки:')
-
-link_part_2 = link[:]
-
-subscribe_count = int(input('Введите нужное число подписок: '))
+# link = input('Ввод ссылки: ')
+accs = int(input('Введите нужное число подписок: '))
 flows_max = int(input('Введите число потоков: '))
 
-threads = []
-count = 0
-flows = 0
 i = 0
-b = 0
-base_threading_active = threading.activeCount()
-while True:
-    while threading.activeCount() - base_threading_active < flows_max:
-        try:
-            x = threading.Thread(target=subscribing, args=[flows, link, accounts[i]])
-        except:
-            print(f'Выход за предел количества аккаунтов ({i+1}). Работа завершена.')
-            b = 1
-            break
-        threads.append(x)
-        x.start()
-        print('Число потоков:', threading.activeCount()-base_threading_active, 'Число вып. действий:', i, end='\r')
-
-        i += 1
-        if i >= subscribe_count:
-            b = 1
-            break
-
-    if b == 1:
+new_accounts = []
+# создание массива нужного количества аккаутов из всех базы данных аккаунтов 
+# (на основе того сколько подписок нужно осуществить)
+for line in accounts:
+    new_accounts.append(line)
+    i += 1
+    if i > accs:
         break
 
-while base_threading_active != threading.activeCount():
-    sleep(1)
+del accounts, accs # удаление уже ненежных переменны
 
-print(f'\n\nВсе операции завершены!')
-pause = input('Введите <Enter> для выхода...')
+# индексы для разделения общего массива аккаунтов
+first_index = 0
+second_index = 0
+average = 0
+# print(len(new_accounts))
+default_count_threading = threading.activeCount() # для понимания того, сколько потоков запущено изначально
+link_complited = 0 # индекесация для листа со ссылками 
+while link_complited != len(links): # пока не используем все ссылки
+
+    if default_count_threading == threading.activeCount():
+        print('Запускаются новые потоки ...')
+        for flows in range(flows_max): # создание потоков
+            if second_index == 0:
+                average = int(len(new_accounts)/flows_max) # разделение массива на равные части для каждого потока
+                second_index = average
+            else:
+                first_index = second_index
+                second_index += average
+                # коррекция погрешности при разделении массива
+                if (flows == (flows_max-1)) and (second_index != len(new_accounts)):
+                    second_index = len(new_accounts) 
+
+            # print(first_index, ':', second_index)
+            arr = new_accounts[first_index:second_index] # создание временного массива для передачи в поток
+            try:
+                threading.Thread(target=subscribing, args=[flows, links[link_complited], arr]).start()
+                print(flows, 'поток запущен')
+            except:
+                print('err')
+
+        first_index = 0
+        second_index = 0
+        print('\nНачаты потоки')
+        print(f'Число потоков сейчас {default_count_threading - threading.activeCount()}')
+        print(f'Линк {link_complited + 1} стартует')
+        link_complited += 1
+
+    sleep(2)
+
+print('\n\nПрограмма завершена')
+pause = input('Введите <Enter> для выхода . . . ')
