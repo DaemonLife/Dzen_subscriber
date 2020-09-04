@@ -61,7 +61,7 @@ def driver_start():
     # opts.add_experimental_option("mobileEmulation", mobile_emulation)
 
     # opts.add_argument("--headless") 
-    driver = webdriver.Chrome(chrome_options=opts, executable_path=r'driver\\Windows\\chromedriver.exe')
+    driver = webdriver.Chrome(chrome_options=opts, executable_path=r'driver\\Windows\\driver.exe')
 
     return driver # возвращаем объект
 

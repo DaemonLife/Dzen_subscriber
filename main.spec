@@ -5,7 +5,7 @@ block_cipher = None
 
 a = Analysis(['D:\\Code\\Python\\Dzen_subscriber\\main.py'],
              pathex=['D:\\Code\\Python\\Dzen_subscriber'],
-             binaries=[('D:\\Code\\Python\\Dzen_subscriber\\driver\\Windows\\chromedriver.exe', '.')],
+             binaries=[('D:\\Code\\Python\\Dzen_subscriber\\driver\\Windows\\driver.exe', '.')],
              datas=[],
              hiddenimports=[],
              hookspath=[],

@@ -9,13 +9,18 @@ from finder import Finder
 from small_functions import *
 
 def subscribing(i, link, arr):
-    driver = driver_start()
+    try:
+        driver = driver_start()
+    except:
+        print('Ошибка драйвера\n')
+        pause = input('Введите <Enter> для выхода из потока . . .')
+        return 0
     finder = Finder(driver)
     driver.get(link)
     count = 0
+    sleep(i*2.5)
     for acc in arr:
         print(f'Proc.{i} подписка...')
-        sleep(i*2.5)
         x = acc.split(':')
         login = x[0]
         password = x[1]

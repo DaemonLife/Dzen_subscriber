@@ -127,18 +127,6 @@ def select_other_acc(finder, login, password, link, count):
             except:
                 pass
 
-        # path = '//div[3]/div/div/div/div/a'
-        # el = finder.element_by_xpath(path)
-        # try:
-        #     el.click()   
-        # except:
-        #     path = '//div[3]/div/div/div/a'
-        #     el = finder.element_by_xpath(path)
-        # try:
-        #     el.click()   
-        # except:
-        #     pass
-
     except:
         # print('Перенаправление 6')
         driver.get(link)
