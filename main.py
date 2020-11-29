@@ -33,6 +33,7 @@ def subscribing(i, link, arr):
 
         # Подписаться
         click_subscribe_button(finder, login, password, link, count, i)
+        sleep(1.5)
 
         # Открыть меню юзера
         open_menu_user(finder, login, password, link, count)
