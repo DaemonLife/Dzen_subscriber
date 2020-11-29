@@ -9,12 +9,22 @@ from finder import Finder
 from small_functions import *
 
 def subscribing(i, link, arr):
-    try:
-        driver = driver_start()
-    except:
-        print('Ошибка драйвера\n')
-        pause = input('Введите <Enter> для выхода из потока . . .')
+    print(f'Ваша ссылка: {arr}\n')
+    err = 0
+    while err < 5:
+        try:
+            driver = driver_start()
+            print(f'Proc.{i} запустился')
+            err = 0
+            break
+        except:
+            err += 1
+    
+    if err != 0:
+        print(f'Proc.{i} не запустился из-за ошибки драйвера!')
+        # input('Введите <Enter> для выхода из потока . . .\n')
         return 0
+
     finder = Finder(driver)
     driver.get(link)
     count = 0
@@ -33,7 +43,7 @@ def subscribing(i, link, arr):
 
         # Подписаться
         click_subscribe_button(finder, login, password, link, count, i)
-        sleep(1.5)
+        sleep(2)
 
         # Открыть меню юзера
         open_menu_user(finder, login, password, link, count)
@@ -52,6 +62,8 @@ def subscribing(i, link, arr):
     
     driver.quit()
     print(f'Proc.{i} завершен')
+
+
 
 
 
@@ -79,7 +91,6 @@ del accounts, accs # удаление уже ненежных переменны
 first_index = 0
 second_index = 0
 average = 0
-# print(len(new_accounts))
 default_count_threading = threading.activeCount() # для понимания того, сколько потоков запущено изначально
 link_complited = 0 # индекесация для листа со ссылками 
 while link_complited != len(links): # пока не используем все ссылки
@@ -108,9 +119,13 @@ while link_complited != len(links): # пока не используем все 
         first_index = 0
         second_index = 0
         print('\nНачаты потоки')
-        print(f'Число потоков сейчас {default_count_threading - threading.activeCount()}')
-        print(f'Линк {link_complited + 1} стартует')
+        # в реальной программе нам не нужно default_count_threading - threading.activeCount(), потому как первео число будет = 0
+        num = default_count_threading - threading.activeCount() # число потоков
+        if num < 0:
+            num = -num
+        print(f'Число потоков сейчас: {num}') 
         link_complited += 1
+        print(f'Начата обработка ссылки {link_complited}')
 
     sleep(2)
 

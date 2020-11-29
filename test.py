@@ -1,3 +1,7 @@
-import threading
+num = -5
 
-print(threading.activeCount())
+print(num)
+
+num = -num
+
+print(num)

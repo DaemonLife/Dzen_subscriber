@@ -33,36 +33,34 @@ def send_login_password(finder, login, password, link, count):
 
 def click_subscribe_button(finder, login, password, link, count, flows):
     driver = finder.driver
-    path = "//span[contains(text(), 'Подписаться')]"
+    # path = "//span[contains(text(), 'Подписаться')]"
+    path = '//div[3]/div/div/div/div/button' # subscribe button in div[3]
     try:
         element = WebDriverWait(driver, 2).until(
             EC.presence_of_element_located((By.XPATH, path))
         )
         element = driver.find_element_by_xpath(path)
     except: # если не найдена кнопка, то возможно просит телефон. Пробуем отказаться.
-        path = '//form/div[3]/button' 
-        el = finder.element_by_xpath(path)
+        el = '//form/div[3]/button' 
+        el = finder.element_by_xpath(el)
         try:
             el.click()
             # пробуем снова подписаться. 
-            path = "//span[contains(text(), 'Подписаться')]"
             try:
                 element = WebDriverWait(driver, 2).until(
                     EC.presence_of_element_located((By.XPATH, path))
                 )
             except: 
-                print('Вы уже подписаны')
+                print('Не удалось обнаружить кнопку подписки')
                 return 0
         except:
             pass
     try:
         element = driver.find_element_by_xpath(path)
-        element = element.find_element_by_xpath('..')
         element.click()
         print(f'Подписался')
-        sleep(0.5)
     except:
-        print('Вы уже подписаны')
+        print('Не удалось нажать кнопку подписки')
         return 0
 
 def open_menu_user(finder, login, password, link, count):
