@@ -57,9 +57,6 @@ def driver_start():
 
     opts = Options()
 
-    # mobile_emulation = { "deviceName": "iPhone X" } # type your device from list
-    # opts.add_experimental_option("mobileEmulation", mobile_emulation)
-
     # opts.add_argument("--headless") 
     driver = webdriver.Chrome(chrome_options=opts, executable_path=driver_path)
 
