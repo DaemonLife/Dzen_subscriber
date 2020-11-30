@@ -32,33 +32,38 @@ def send_login_password(finder, login, password, link, count):
         return 0
 
 def click_subscribe_button(finder, login, password, link, count, flows):
-    driver = finder.driver
-    # path = "//span[contains(text(), 'Подписаться')]"
+
     path = '//div[3]/div/div/div/div/button' # subscribe button in div[3]
-    try:
-        element = WebDriverWait(driver, 2).until(
-            EC.presence_of_element_located((By.XPATH, path))
-        )
-        element = driver.find_element_by_xpath(path)
-    except: # если не найдена кнопка, то возможно просит телефон. Пробуем отказаться.
-        el = '//form/div[3]/button' 
-        el = finder.element_by_xpath(el)
-        try:
-            el.click()
-            # пробуем снова подписаться. 
+    element = finder.element_by_xpath(path)
+
+    if element == None: # если не найдена кнопка, то возможно просит телефон. Пробуем отказаться.
+        print('Кнопка \"Подписаться\" не найдена')
+        print('Попытка отказаться от телефона')
+        button = '//form/div[3]/button' 
+        element = finder.element_by_xpath(button)
+        if element != None:
             try:
-                element = WebDriverWait(driver, 2).until(
-                    EC.presence_of_element_located((By.XPATH, path))
-                )
-            except: 
-                print('Не удалось обнаружить кнопку подписки')
-                return 0
-        except:
-            pass
+                element.click()
+            except:
+                print('Не удалось нажать на кнопку')
+        else:
+            print('Кнопка отказа от телефона не найдена')
+            print('Попытка отказаться от фото профиля')
+            button = '//div/div/div/span/a'
+            element = finder.element_by_xpath(button)
+            if element != None:
+                try:
+                    element.click()
+                except:
+                    print('Не удалось нажать на кнопку')
+            else:
+                print('Кнопка отказа от фото профиля не найдена')
+
+    # снова ищем кнопку подписки    
+    element = finder.element_by_xpath(path)
     try:
-        element = driver.find_element_by_xpath(path)
         element.click()
-        print(f'Подписался')
+        print('Успешно подписался')
     except:
         print('Не удалось нажать кнопку подписки')
         return 0

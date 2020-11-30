@@ -1,7 +1,7 @@
 num = -5
 
-print(num)
+num = 4
 
-num = -num
+num = 3
 
-print(num)
+num = 1

@@ -9,7 +9,6 @@ from finder import Finder
 from small_functions import *
 
 def subscribing(i, link, arr):
-    print(f'Ваша ссылка: {arr}\n')
     err = 0
     while err < 5:
         try:
@@ -61,7 +60,7 @@ def subscribing(i, link, arr):
         print(f'Proc.{i} подписка завершена, число подписок потока {i}: {count}')
     
     driver.quit()
-    print(f'Proc.{i} завершен')
+    print(f'Proc.{i} завершен\n\n')
 
 
 
@@ -70,7 +69,7 @@ def subscribing(i, link, arr):
 accounts = open_sign() 
 links = open_links() 
 
-print('Введите необходимую ссылку. Пример: https://zen.yandex.ru/fitness13')
+# print('Введите необходимую ссылку. Пример: https://zen.yandex.ru/fitness13')
 # link = input('Ввод ссылки: ')
 accs = int(input('Введите нужное число подписок: '))
 flows_max = int(input('Введите число потоков: '))
